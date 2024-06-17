@@ -1,0 +1,73 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+typedef struct { // here the name of the struct is Student
+    char name[50];
+    float physics;
+    float chemistry;
+    float mathmatics;
+    float english;
+    float total; // here the total is being calculated based on the weights of the subjects;
+} Student;
+
+
+float weightedTotal(int s1,int s2,int s3,int s4){
+    float total = 0.40*s1 + 0.25*s2 + 0.25*s3 +0.10*s4;
+    return total;
+}
+
+void sortByTotal(Student a[], int NOS) {
+    Student temp;
+    for (int i = 0; i < NOS; i++) {
+        for (int j = 0; j < NOS - i - 1; j++) {
+            if (a[j].total < a[j + 1].total) {
+                temp = a[j];
+                a[j] = a[j + 1];
+                a[j + 1] = temp;
+            }
+        }
+    }
+}
+int main() {
+    int NOS; // nos means number of students 
+    char Name[50]; // variable for storing the name of the student
+    float total;
+    printf("\nComputer program to store students marks and return their ranks \n"); 
+    printf("Enter the number of students in the class: ");
+    scanf("%d", &NOS);
+    getchar(); // consume newline character after entering NOS
+
+    Student students[NOS]; // This is the array of structs because we cannot create new variables inside the for loop
+    float physics, chemistry, mathmatics, english;
+
+    printf("\nNow Enter the name of each student and press enter to input their all subject marks\nEnter the marks in given order and press space after each subject marks\n\n\n\n");
+    for(int i = 0; i < NOS; i++) {
+        printf("Enter the name of student[%d]: ", i);
+        fgets(Name, 50, stdin);
+        Name[strcspn(Name, "\n")] = '\0'; // remove trailing newline character
+
+        printf("Now enter the marks in following order...\n1) Physics 2) Chemistry 3) Mathmatics 4) English: ");
+        scanf("%f %f %f %f", &physics, &chemistry, &mathmatics, &english);
+        getchar(); // consume newline character after entering marks
+
+        // Assigning the values of student name and their marks to the array
+        strcpy(students[i].name, Name);
+        students[i].physics = physics;
+        students[i].chemistry = chemistry;
+        students[i].mathmatics = mathmatics;
+        students[i].english = english;
+        total = weightedTotal(mathmatics,physics,chemistry,english);
+        students[i].total = total;
+        printf("\n");
+    }
+    
+sortByTotal(students,NOS);
+printf("\n The following table represents the student ranks\n\n\n");
+printf("Rank  Student Name  Total Marks\n");
+for(int i = 0; i < NOS; i++) {
+    printf("%-6d%-14s%.2f\n", i + 1, students[i].name, students[i].total);
+}
+
+    return 0;
+}
