@@ -1,0 +1,108 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+typedef struct { // here the name of the struct is Student
+    char  name[50];
+    float physics;
+    float chemistry;
+    float mathmatics;
+    float english;
+    float total; // here the total is being calculated based on the weights of the subjects;
+    int rank;
+} Student;
+
+
+float weightedTotal(int s1,int s2,int s3,int s4){
+    float total = 0.40*s1 + 0.25*s2 + 0.25*s3 +0.10*s4;
+    return total;
+}
+
+void sortByTotal(Student a[], int NOS) {
+    Student temp;
+    for (int i = 0; i < NOS; i++) {
+        for (int j = 0; j < NOS - i - 1; j++) {
+            if (a[j].total < a[j + 1].total) {
+                temp = a[j];
+                a[j] = a[j + 1];
+                a[j + 1] = temp;
+            }
+        }
+    }
+}
+
+void sortByNames(Student a[],int NOS){
+    Student Temp;
+    char x,y;
+    for(int i=0;i<NOS;i++){
+        for(int j=0;j<NOS-i-1;j++){
+            if(a[j].name[0] > a[j+1].name[0]){
+                Temp = a[j];
+                a[j] = a[j+1];
+                a[j+1] = Temp;
+            }
+        }
+    }
+}
+int main() {
+    int NOS; // nos means number of students 
+    char Name[50]; // variable for storing the name of the student
+    float total;
+    printf("\nComputer program to store students marks and return their ranks \n"); 
+    printf("Enter the number of students in the class: ");
+    scanf("%d", &NOS);
+    getchar(); // consume newline character after entering NOS
+
+    Student students[NOS]; // This is the array of structs because we cannot create new variables inside the for loop
+    Student Array[NOS];    // this array will be used to store the the students names with their ranks sorted based on names 
+    
+    float physics, chemistry, mathmatics, english;
+
+    printf("\nNow Enter the name of each student and press enter to input their all subject marks\nEnter the marks in given order and press space after each subject marks\n\n\n\n");
+    for(int i = 0; i < NOS; i++) {
+        printf("Enter the name of student[%d]: ", i);
+        fgets(Name, 50, stdin);
+        Name[strcspn(Name, "\n")] = '\0'; // remove trailing newline character
+
+        printf("Now enter the marks in following order...\n1) Physics 2) Chemistry 3) Mathmatics 4) English: ");
+        scanf("%f %f %f %f", &physics, &chemistry, &mathmatics, &english);
+        getchar(); // consume newline character after entering marks
+
+        // Assigning the values of student name and their marks to the array
+        strcpy(students[i].name, Name);
+        students[i].physics = physics;
+        students[i].chemistry = chemistry;
+        students[i].mathmatics = mathmatics;
+        students[i].english = english;
+        total = weightedTotal(mathmatics,physics,chemistry,english);
+        students[i].total = total;
+        printf("\n");
+    }
+    
+sortByTotal(students,NOS);
+// THIS IS FOR LOOP FOR ASSIGNING THE RANKS TO THE STUDENTS 
+// as the array is already sorted with ranks we can simply assign the ranks to the students by assigning the loop of i;
+for(int i=0;i<NOS;i++){
+    if(i> 0 && students[i].total == students[i-1].total){
+        students[i].rank = students[i-1].rank ;
+    }
+    else{
+    students[i].rank = i+1;
+    }
+}
+printf("\n The following table represents the student ranks sorted by ranks\n\n\n\n\n");
+printf("*******************************************************************\n\n");
+printf("Rank  Student Name                      Total Score\n");
+for(int i = 0; i < NOS; i++) {
+    printf("%-6d%-30s    %.2f\n", students[i].rank, students[i].name, students[i].total);
+}
+sortByNames(students,NOS);
+printf("\n The following table represents the student names and ranks sorted by ranks\n\n\n\n\n");
+printf("*****************************************************************************\n\n");
+printf("Student Name                         Total Score    Rank\n");
+    for (int i = 0; i < NOS; i++) {
+        printf("%-30s       %.2f          %-6d\n", students[i].name, students[i].total, students[i].rank);
+    }
+    
+    return 0;
+}
